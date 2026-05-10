@@ -1,0 +1,4 @@
+*.pdf
+.claude/
+node_modules/
+dist/
