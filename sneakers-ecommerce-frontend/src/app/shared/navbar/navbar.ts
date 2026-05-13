@@ -21,16 +21,16 @@ import { CartService } from '../../core/services/cart.service';
         }
       </div>
       <div class="nav-actions">
+        @if (!auth.isAdmin()) {
+          <button class="cart-btn" (click)="toggleCart()">
+            🛒
+            @if (cart.itemCount() > 0) {
+              <span class="badge">{{ cart.itemCount() }}</span>
+            }
+          </button>
+        }
         @if (auth.currentUser()) {
           <span class="username">{{ auth.currentUser()?.full_name }}</span>
-          @if (!auth.isAdmin()) {
-            <button class="cart-btn" (click)="toggleCart()">
-              🛒
-              @if (cart.itemCount() > 0) {
-                <span class="badge">{{ cart.itemCount() }}</span>
-              }
-            </button>
-          }
           <button class="btn btn-secondary" (click)="logout()">Salir</button>
         } @else {
           <a routerLink="/login" class="btn btn-primary">Iniciar Sesión</a>

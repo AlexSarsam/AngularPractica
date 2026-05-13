@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+    import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { ProductService } from '../../core/services/product.service';
@@ -14,7 +14,6 @@ import { Product, Category } from '../../core/models';
         <button class="btn btn-primary" (click)="abrirCrear()">+ Nuevo producto</button>
       </div>
       @if (mensajeError())  { <div class="alert-error">{{ mensajeError() }}</div> }
-      @if (mensajeExito())  { <div class="alert-success">{{ mensajeExito() }}</div> }
       @if (mostrarFormulario()) {
         <div class="form-card">
           <h2>{{ idEditando() ? 'Editar producto' : 'Nuevo producto' }}</h2>
@@ -23,7 +22,7 @@ import { Product, Category } from '../../core/models';
             <div class="form-group"><label>Marca</label><input [(ngModel)]="formulario.brand" placeholder="Nike, Adidas..." /></div>
             <div class="form-group">
               <label>Categoría *</label>
-              <select [(ngModel)]="formulario.category_id">
+              <select [(ngModel)]="formulario.category_id"> 
                 <option value="">Selecciona categoría</option>
                 @for (categoria of listaCategorias(); track categoria.id) {
                   <option [value]="categoria.id">{{ categoria.name }}</option>
@@ -76,11 +75,10 @@ export class AdminProductosComponent implements OnInit {
   mostrarFormulario = signal(false);
   idEditando        = signal<string | null>(null);
   mensajeError      = signal('');
-  mensajeExito      = signal('');
 
   formulario = { name: '', brand: '', category_id: '', price: '', stock: '', sizes: '', description: '', image: null as File | null };
 
-  ngOnInit() {
+  ngOnInit() { 
     this.cargarProductos();
     this.servicioProductos.getCategories().subscribe(categorias => this.listaCategorias.set(categorias));
   }
@@ -123,20 +121,24 @@ export class AdminProductosComponent implements OnInit {
 
   guardar() {
     this.mensajeError.set('');
-    const datosFormulario = this.construirFormData();
-    const idProducto = this.idEditando();
+    const datosFormulario = this.construirFormData(); 
+    const idProducto = this.idEditando(); 
     const peticion = idProducto ? this.servicioProductos.updateProduct(idProducto, datosFormulario) : this.servicioProductos.createProduct(datosFormulario);
-    peticion.subscribe({
-      next: () => { this.mensajeExito.set(idProducto ? 'Producto actualizado' : 'Producto creado'); this.mostrarFormulario.set(false); this.cargarProductos(); setTimeout(() => this.mensajeExito.set(''), 3000); },
-      error: (err) => this.mensajeError.set(err.error?.error || 'Error al guardar')
+    peticion.subscribe({ 
+      next: () => { this.mostrarFormulario.set(false); this.cargarProductos(); },
+      error: (error) => this.mensajeError.set(error.error?.error || 'Error al guardar')
     });
   }
 
   eliminar(producto: Product) {
     if (!confirm(`¿Eliminar "${producto.name}"? Esta acción es permanente.`)) return;
     this.servicioProductos.deleteProduct(producto.id).subscribe({
-      next: () => { this.mensajeExito.set('Producto eliminado'); this.cargarProductos(); setTimeout(() => this.mensajeExito.set(''), 3000); },
-      error: (err) => this.mensajeError.set(err.error?.error || 'Error al eliminar')
+      next: () => this.cargarProductos(),
+      error: (error) => this.mensajeError.set(error.error?.error || 'Error al eliminar')
     });
   }
 }
+
+
+
+

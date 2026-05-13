@@ -70,18 +70,17 @@ export class ProductDetailComponent implements OnInit {
   ngOnInit() {
     const slug = this.ruta.snapshot.paramMap.get('slug')!;
     this.servicioProductos.getProductBySlug(slug).subscribe({
-      next: p => this.producto.set(p),
+      next: producto => this.producto.set(producto),
       error: () => this.mensajeError.set('Producto no encontrado')
     });
   }
 
   anadirAlCarrito() {
-    const p = this.producto();
-    if (!p) return;
-    if (p.sizes.length > 0 && !this.tallaSeleccionada()) { this.mensajeError.set('Selecciona una talla'); return; }
+    const producto = this.producto();
+    if (!producto) return;
+    if (producto.sizes.length > 0 && !this.tallaSeleccionada()) { this.mensajeError.set('Selecciona una talla'); return; }
     this.mensajeError.set('');
-    for (let i = 0; i < this.cantidad(); i++) { this.cart.addItem(p, this.tallaSeleccionada()); }
+    Array.from({ length: this.cantidad() }).forEach(() => this.cart.addItem(producto, this.tallaSeleccionada()));
     this.anadido.set(true);
-    setTimeout(() => this.anadido.set(false), 2000);
   }
 }

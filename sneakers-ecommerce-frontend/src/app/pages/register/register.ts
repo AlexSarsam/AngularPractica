@@ -11,7 +11,6 @@ import { AuthService } from '../../core/services/auth.service';
       <div class="auth-card">
         <h1>Crear cuenta</h1>
         @if (mensajeError())  { <div class="alert-error">{{ mensajeError() }}</div> }
-        @if (mensajeExito())  { <div class="alert-success">{{ mensajeExito() }}</div> }
         <div class="form-group">
           <label>Nombre completo</label>
           <input type="text" [(ngModel)]="nombreCompleto" placeholder="Tu nombre" />
@@ -43,17 +42,13 @@ export class RegisterComponent {
   contrasena        = '';
   confirmarContrasena = '';
   mensajeError      = signal('');
-  mensajeExito      = signal('');
 
   registrarse() {
     this.mensajeError.set('');
     if (this.contrasena !== this.confirmarContrasena) { this.mensajeError.set('Las contraseñas no coinciden'); return; }
     this.servicioAuth.register({ email: this.email, password: this.contrasena, full_name: this.nombreCompleto }).subscribe({
-      next: () => {
-        this.mensajeExito.set('Cuenta creada. Redirigiendo al login...');
-        setTimeout(() => this.router.navigate(['/login']), 1500);
-      },
-      error: (err) => this.mensajeError.set(err.error?.error || 'Error al registrarse')
+      next: () => this.router.navigate(['/login']),
+      error: (error) => this.mensajeError.set(error.error?.error || 'Error al registrarse')
     });
   }
 }

@@ -11,7 +11,6 @@ import { Order, OrderStatus } from '../../core/models';
     <div class="page">
       <h1 class="page-title">Gestión de Pedidos</h1>
       @if (mensajeError()) { <div class="alert-error">{{ mensajeError() }}</div> }
-      @if (mensajeExito()) { <div class="alert-success">{{ mensajeExito() }}</div> }
       @if (listaPedidos().length === 0) {
         <div class="empty-state">No hay pedidos todavía</div>
       } @else {
@@ -63,7 +62,6 @@ export class AdminPedidosComponent implements OnInit {
 
   listaPedidos    = signal<Order[]>([]);
   pedidoExpandido = signal<string | null>(null);
-  mensajeExito    = signal('');
   mensajeError    = signal('');
 
   estadosDisponibles: OrderStatus[] = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
@@ -72,7 +70,7 @@ export class AdminPedidosComponent implements OnInit {
     this.servicioPedidos.getAllOrders().subscribe(pedidos => this.listaPedidos.set(pedidos));
   }
 
-  togglePedido(idPedido: string) {
+  togglePedido(idPedido: string) { 
     this.pedidoExpandido.set(this.pedidoExpandido() === idPedido ? null : idPedido);
   }
 
@@ -83,12 +81,8 @@ export class AdminPedidosComponent implements OnInit {
 
   cambiarEstado(pedido: Order, nuevoEstado: string) {
     this.servicioPedidos.updateStatus(pedido.id, nuevoEstado).subscribe({
-      next: () => {
-        this.listaPedidos.update(pedidos => pedidos.map(p => p.id === pedido.id ? { ...p, status: nuevoEstado as OrderStatus } : p));
-        this.mensajeExito.set('Estado actualizado');
-        setTimeout(() => this.mensajeExito.set(''), 2000);
-      },
-      error: (err) => this.mensajeError.set(err.error?.error || 'Error al actualizar')
+      next: () => this.listaPedidos.update(pedidos => pedidos.map(pedidoActual => pedidoActual.id === pedido.id ? { ...pedidoActual, status: nuevoEstado as OrderStatus } : pedidoActual)),
+      error: (error) => this.mensajeError.set(error.error?.error || 'Error al actualizar')
     });
   }
 }

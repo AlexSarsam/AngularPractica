@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
   private servicioProductos = inject(ProductService);
 
   listaProductos  = signal<Product[]>([]);
-  listaCategorias = signal<Category[]>([]);
+  listaCategorias = signal<Category[]>([]); 
 
   ngOnInit() {
     this.servicioProductos.getProducts().subscribe(respuesta => this.listaProductos.set(respuesta.data.slice(0, 6)));

@@ -17,7 +17,6 @@ import { AuthService } from '../../core/services/auth.service';
           <h2>Carrito</h2>
           <button (click)="cart.close()">✕</button>
         </div>
-        @if (mensajeExito()) { <div class="alert-success">{{ mensajeExito() }}</div> }
         @if (cart.items().length === 0) {
           <div class="empty-state"><p>🛒</p><p>Tu carrito está vacío</p></div>
         } @else {
@@ -35,7 +34,7 @@ import { AuthService } from '../../core/services/auth.service';
                   @if (item.size) { <span>Talla: {{ item.size }}</span> }
                   <span>x{{ item.quantity }} — {{ (item.product.price * item.quantity) | number:'1.2-2' }}€</span>
                 </div>
-                <button class="remove-btn" (click)="eliminarItem(item.product.id, item.size)">✕</button>
+                <button class="remove-btn" (click)="cart.removeItem(item.product.id, item.size)">✕</button>
               </div>
             }
           </div>
@@ -71,11 +70,6 @@ export class CartComponent {
   direccionEnvio  = '';
   observaciones   = '';
   mensajeError    = signal('');
-  mensajeExito    = signal('');
-
-  eliminarItem(productoId: string, talla: string | null) {
-    this.cart.removeItem(productoId, talla);
-  }
 
   finalizarPedido() {
     if (!this.auth.isLoggedIn()) { this.cart.close(); this.router.navigate(['/login']); return; }
@@ -91,15 +85,13 @@ export class CartComponent {
     };
     this.servicioPedidos.createOrder(datosPedido).subscribe({
       next: () => {
-        this.mensajeExito.set('¡Pedido realizado correctamente!');
         this.cart.clear();
         this.mostrarCheckout.set(false);
         this.direccionEnvio = '';
         this.observaciones  = '';
-        this.mensajeError.set('');
-        setTimeout(() => { this.cart.close(); this.mensajeExito.set(''); }, 2000);
+        this.cart.close();
       },
-      error: (err) => this.mensajeError.set(err.error?.error || 'Error al crear el pedido')
+      error: (error) => this.mensajeError.set(error.error?.error || 'Error al crear el pedido')
     });
   }
 }

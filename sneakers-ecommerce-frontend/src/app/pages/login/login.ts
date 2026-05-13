@@ -37,7 +37,8 @@ export class LoginComponent {
     this.mensajeError.set('');
     this.servicioAuth.login({ email: this.email, password: this.contrasena }).subscribe({
       next: () => this.router.navigate(['/']),
-      error: (err) => this.mensajeError.set(err.error?.error || 'Credenciales incorrectas')
+      error: (error) => this.mensajeError.set(error.error?.error || 'Credenciales incorrectas')
     });
   }
 }
+

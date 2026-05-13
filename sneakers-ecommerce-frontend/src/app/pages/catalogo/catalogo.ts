@@ -46,7 +46,7 @@ import { Product, Category } from '../../core/models';
         </div>
         @if (totalPaginas > 1) {
           <div class="pagination">
-            @for (pagina of [].constructor(totalPaginas); track $index) {
+            @for (pagina of Array(totalPaginas); track $index) {
               <button class="page-btn" [class.active]="paginaActual() === $index + 1" (click)="cambiarPagina($index + 1)">{{ $index + 1 }}</button>
             }
           </div>

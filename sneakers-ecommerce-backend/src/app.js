@@ -18,8 +18,6 @@ app.use('/api/categories', categoriesRoutes)
 app.use('/api/products',   productsRoutes)
 app.use('/api/orders',     ordersRoutes)
 
-app.get('/health', (req, res) => res.json({ status: 'ok' }))
-
 app.use((err, req, res, next) => {
   console.error(err.stack)
   res.status(500).json({ error: err.message || 'Error interno del servidor' })

@@ -27,10 +27,10 @@ export class ProductService {
   }
 
   createProduct(formData: FormData) {
-    return this.http.post<Product>(this.api, formData);
+    return this.http.post<Product>(this.api, formData); 
   }
 
-  updateProduct(id: string, formData: FormData) {
+  updateProduct(id: string, formData: FormData) {  
     return this.http.put<Product>(`${this.api}/${id}`, formData);
   }
 
@@ -38,3 +38,5 @@ export class ProductService {
     return this.http.delete(`${this.api}/${id}`);
   }
 }
+
+

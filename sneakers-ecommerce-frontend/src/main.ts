@@ -6,9 +6,9 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { routes } from './app/app.routes';
 import { App } from './app/app';
 
-const authInterceptor: HttpInterceptorFn = (req, next) => {
+const authInterceptor: HttpInterceptorFn = (peticion, continuar) => {
   const token = localStorage.getItem('access_token');
-  return token ? next(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })) : next(req);
+  return token ? continuar(peticion.clone({ setHeaders: { Authorization: `Bearer ${token}` } })) : continuar(peticion);
 };
 
 bootstrapApplication(App, {
@@ -17,4 +17,8 @@ bootstrapApplication(App, {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor]))
   ]
-}).catch(err => console.error(err));
+}).catch(error => console.error(error));
+
+
+
+
